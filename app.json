@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "beautifulcolourslaundry_app",
-    "slug": "beautifulcolourslaundry_app",
+    "slug": "beautifulcolorslaundry",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.zoetechglobalit.beautifulcolorslaundry"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "cb01ed8a-fbe7-4804-b458-c42b91f4f007"
+      }
+    },
+    "owner": "zoetechglobalit"
   }
 }

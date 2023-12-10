@@ -9,11 +9,11 @@ const services = [
     image: "https://cdn-icons-png.flaticon.com/128/3003/3003984.png",
     name: "Washing",
   },
-  {
-    id: "11",
-    image: "https://cdn-icons-png.flaticon.com/128/2975/2975175.png",
-    name: "Laundry",
-  },
+  // {
+  //   id: "11",
+  //   image: "https://cdn-icons-png.flaticon.com/128/2975/2975175.png",
+  //   name: "Laundry",
+  // },
   {
     id: "12",
     image: "https://cdn-icons-png.flaticon.com/128/9753/9753675.png",
@@ -34,7 +34,7 @@ const services = [
           { services.map((item, idx) => (
                 <Pressable
                 style={{
-                    margin:10,
+                    margin:3,
                     backgroundColor:Colors.primary,
                     padding:20,
                     borderRadius:10,

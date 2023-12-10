@@ -18,6 +18,7 @@ import {
   import { decrementQty, incrementQty } from "../ProductReducer";
   import { doc, setDoc } from "firebase/firestore";
   import { auth, db } from "../firebase";
+  import { Colors } from "../data/Colors";
   
   const CartScreen = () => {
     const cart = useSelector((state) => state.cart.cart);
@@ -42,6 +43,10 @@ import {
         }
       );
     };
+
+    const  formatWithCommas = (x)=> {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
     return (
       <>
         <ScrollView style={{ marginTop: 50 }}>
@@ -110,7 +115,7 @@ import {
                       >
                         <Text
                           style={{
-                            fontSize: 20,
+                            fontSize: 18,
                             color: "#088F8F",
                             paddingHorizontal: 6,
                             fontWeight: "600",
@@ -123,7 +128,7 @@ import {
                       <Pressable>
                         <Text
                           style={{
-                            fontSize: 19,
+                            fontSize: 14,
                             color: "#088F8F",
                             paddingHorizontal: 8,
                             fontWeight: "600",
@@ -141,7 +146,7 @@ import {
                       >
                         <Text
                           style={{
-                            fontSize: 20,
+                            fontSize: 18,
                             color: "#088F8F",
                             paddingHorizontal: 6,
                             fontWeight: "600",
@@ -152,8 +157,8 @@ import {
                       </Pressable>
                     </Pressable>
   
-                    <Text style={{ fontSize: 16, fontWeight: "500" }}>
-                      ${item.price * item.quantity}
+                    <Text style={{ fontSize: 14, fontWeight: "500" }}>
+                        &#x20A6;{formatWithCommas(item.price * item.quantity)}
                     </Text>
                   </View>
                 ))}
@@ -179,12 +184,12 @@ import {
                     }}
                   >
                     <Text
-                      style={{ fontSize: 18, fontWeight: "400", color: "gray" }}
+                      style={{ fontSize: 14, fontWeight: "400", color: "gray" }}
                     >
                       Item Total
                     </Text>
-                    <Text style={{ fontSize: 18, fontWeight: "400" }}>
-                      ₹{total}
+                    <Text style={{ fontSize: 14, fontWeight: "400" }}>
+                         &#x20A6;{ formatWithCommas(total)}
                     </Text>
                   </View>
   
@@ -197,15 +202,15 @@ import {
                     }}
                   >
                     <Text
-                      style={{ fontSize: 18, fontWeight: "400", color: "gray" }}
+                      style={{ fontSize: 14, fontWeight: "400", color: "gray" }}
                     >
                       Delivery Fee | 1.2KM
                     </Text>
                     <Text
                       style={{
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: "400",
-                        color: "#088F8F",
+                        color: Colors.primary,
                       }}
                     >
                       FREE
@@ -214,7 +219,7 @@ import {
   
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text
-                      style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
+                      style={{ fontSize: 14, fontWeight: "500", color: "gray" }}
                     >
                       Free Delivery on Your order
                     </Text>
@@ -238,15 +243,15 @@ import {
                     }}
                   >
                     <Text
-                      style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
+                      style={{ fontSize: 14, fontWeight: "500", color: "gray" }}
                     >
-                      selected Date
+                      Pick Up Date
                     </Text>
                     <Text
                       style={{
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: "400",
-                        color: "#088F8F",
+                        color: Colors.primary,
                       }}
                     >
                       {/* {route.params.pickUpDate} */}
@@ -261,16 +266,16 @@ import {
                     }}
                   >
                     <Text
-                      style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
+                      style={{ fontSize: 14, fontWeight: "500", color: "gray" }}
                     >
                       No Of Days
                     </Text>
   
                     <Text
                       style={{
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: "400",
-                        color: "#088F8F",
+                        color: Colors.primary,
                       }}
                     >
                       {route.params.no_Of_days}
@@ -286,16 +291,16 @@ import {
                     }}
                   >
                     <Text
-                      style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
+                      style={{ fontSize: 14, fontWeight: "500", color: "gray" }}
                     >
-                      selected Pick Up Time
+                       Pick Up Time
                     </Text>
   
                     <Text
                       style={{
-                        fontSize: 18,
+                        fontSize: 14,
                         fontWeight: "400",
-                        color: "#088F8F",
+                        color: Colors.primary,
                       }}
                     >
                       {route.params.selectedTime}
@@ -322,7 +327,7 @@ import {
                       To Pay
                     </Text>
                     <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                      {total + 95}
+                       &#x20A6;{ formatWithCommas(total + 95)}
                     </Text>
                   </View>
                 </View>
@@ -334,10 +339,10 @@ import {
         {total === 0 ? null : (
           <Pressable
             style={{
-              backgroundColor: "#088F8F",
+              backgroundColor: Colors.primary,
               marginTop: "auto",
               padding: 10,
-              marginBottom: 40,
+              marginBottom: 10,
               margin: 15,
               borderRadius: 7,
               flexDirection: "row",
@@ -347,7 +352,7 @@ import {
           >
             <View>
               <Text style={{ fontSize: 17, fontWeight: "600", color: "white" }}>
-                {cart.length} items | $ {total}
+                {cart.length} items | &#x20A6; {formatWithCommas(total)}
               </Text>
               <Text
                 style={{
@@ -357,7 +362,7 @@ import {
                   marginVertical: 6,
                 }}
               >
-                extra charges might apply
+                Extra charges might apply
               </Text>
             </View>
   

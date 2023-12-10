@@ -1,33 +1,34 @@
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
+import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
   StyleSheet,
   Text,
-  View,
-  SafeAreaView,
-  Alert,
-  Pressable,
-  Image,
   TextInput,
-  ScrollView,
+  View
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { Feather } from "@expo/vector-icons";
-import * as Location from "expo-location";
-import { MaterialIcons } from "@expo/vector-icons";
-import Carousel from "../componets/Carousel";
-import Services from "../componets/Services";
-import DressItem from "../componets/DressItem";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../ProductReducer";
-import { useNavigation } from "@react-navigation/native";
-import { collection, getDoc, getDocs } from "firebase/firestore";
+import Carousel from "../componets/Carousel";
+import DressItem from "../componets/DressItem";
+import Services from "../componets/Services";
 import { db } from "../firebase";
+import { Colors } from "../data/Colors";
 
 const HomeScreen = () => {
   const cart = useSelector((state) => state.cart.cart);
   const [items,setItems] = useState([]);
+  const [isProductLoaded,setProductLoaded] = useState(false);
   const total = cart.map((item) => item.quantity * item.price).reduce((curr,prev) => curr + prev,0);
   const navigation = useNavigation();
-  console.log(cart);
+ 
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
     "we are loading your location"
   );
@@ -99,8 +100,12 @@ const HomeScreen = () => {
     if (product.length > 0) return;
 
     const fetchProducts = async () => {
+      setProductLoaded(true);
       const colRef = collection(db,"types");
       const docsSnap = await getDocs(colRef);
+        // check if the products have been fetched from the database
+       if ( docsSnap ) setProductLoaded(false);
+
       docsSnap.forEach((doc) => {
         items.push(doc.data());
       });
@@ -160,6 +165,10 @@ const HomeScreen = () => {
       price: 10,
     },
   ];
+
+  const  formatWithCommas = (x)=> {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
   return (
     <>
       <ScrollView
@@ -209,9 +218,7 @@ const HomeScreen = () => {
         <Services />
 
         {/* Render all the Products */}
-        {product.map((item, index) => (
-          <DressItem item={item} key={index} />
-        ))}
+        { isProductLoaded ?  <ActivityIndicator color={Colors.primary}/> : product.map((item, index) => (  <DressItem item={item} key={index} /> )) }
       </ScrollView>
 
           {total === 0 ? (
@@ -219,7 +226,7 @@ const HomeScreen = () => {
           ) : (
             <Pressable
             style={{
-              backgroundColor: "#088F8F",
+              backgroundColor: Colors.primary,
               padding: 10,
               marginBottom: 40,
               margin: 15,
@@ -228,10 +235,10 @@ const HomeScreen = () => {
               alignItems: "center",
               justifyContent:"space-between",
             }}
-          >
+          >	 
             <View>
-              <Text style={{fontSize:17,fontWeight:"600",color:"white"}}>{cart.length} items |  $ {total}</Text>
-              <Text style={{fontSize:15,fontWeight:"400",color:"white",marginVertical:6}}>extra charges might apply</Text>
+              <Text style={{fontSize:17,fontWeight:"600",color:"white"}}>{cart.length} item(s) |  &#x20A6; {formatWithCommas(total)}</Text>
+              <Text style={{fontSize:15,fontWeight:"400",color:"white",marginVertical:6}}>Extra charges might apply</Text>
             </View>
     
             <Pressable onPress={() => navigation.navigate("PickUp")}>

@@ -19,8 +19,9 @@ import {
 import { Image } from "react-native";
 import { Colors } from "../data/Colors";
   const LoginScreen = () => {
-    const [email, setEmail] = useState("");
-    const [loading,setLoading] = useState(false);
+    const [email, setEmail]       = useState("");
+    const [loading,setLoading]    = useState(false);
+    const [logingIn,setlogingIn]  = useState(false);
     const [password, setPassword] = useState("");
     const navigation = useNavigation();
   
@@ -39,9 +40,13 @@ import { Colors } from "../data/Colors";
     },[])
     
     const login = () => {
+      setlogingIn(true);
       signInWithEmailAndPassword(auth,email,password).then((userCredential) => {
         console.log("user credential",userCredential);
-        const user = userCredential.user;
+        const user = userCredential.user; 
+        if( user ){
+          setlogingIn(false);
+        }
         console.log("user details",user)
       })
     }
@@ -92,6 +97,7 @@ import { Colors } from "../data/Colors";
                 value={email}
                 onChangeText={(text) => setEmail(text)}
                 placeholderTextColor="black"
+                keyboardType="email-address"
                 style={{
                   fontSize: email ? 18 : 18,
                   borderBottomWidth: 1,
@@ -123,7 +129,7 @@ import { Colors } from "../data/Colors";
             </View>
   
             <Pressable
-            onPress={login}
+              onPress={login}
               style={{
                 width: 200,
                 backgroundColor: Colors.primary,
@@ -135,7 +141,7 @@ import { Colors } from "../data/Colors";
               }}
             >
               <Text style={{ fontSize: 18, textAlign: "center", color: "white" }}>
-                Login
+                  {logingIn ? <ActivityIndicator color={Colors.white} /> : "Login"}
               </Text>
             </Pressable>
   

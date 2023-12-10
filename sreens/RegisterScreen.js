@@ -7,7 +7,8 @@ import {
     SafeAreaView,
     KeyboardAvoidingView,
     Alert,
-    ScrollView
+    ScrollView,
+    ActivityIndicator
   } from "react-native";
   import { Feather } from '@expo/vector-icons';
   import { Ionicons } from "@expo/vector-icons";
@@ -25,8 +26,12 @@ import { Colors } from "../data/Colors";
       const [email,setEmail] = useState("");
       const [password,setPassword] = useState("");
       const [phone,setPhone] = useState("");
+
+      const [registering,setRegistering] = useState(false);
       const navigation = useNavigation();
+
       const register = () => {
+        setRegistering(true);
         if(email === "" || password === "" || phone === ""){
           Alert.alert(
             "Invalid Details",
@@ -34,24 +39,55 @@ import { Colors } from "../data/Colors";
             [
               {
                 text: "Cancel",
-                onPress: () => console.log("Cancel Pressed"),
+                onPress: () => setRegistering(false),
                 style: "cancel"
               },
-              { text: "OK", onPress: () => console.log("OK Pressed") }
+              { text: "OK", onPress: () => setRegistering(false) }
             ],
             { cancelable: false }
           );
+        }else{
+            createUserWithEmailAndPassword(auth,email,password).then((userCredential) => {
+              console.log("user credential",userCredential);
+              const user = userCredential._tokenResponse.email;
+              const myUserUid = auth.currentUser.uid;
+              console.log(myUserUid);
+      
+              setDoc(doc(db,"users",`${myUserUid}`),{
+                email:user,
+                phone:phone
+              }).then( (result) =>{
+                setRegistering(false);
+                  console.log(result);
+              })
+              .catch( (error)=>{
+                Alert.alert(
+                  "Error",
+                  error.message,
+                  [
+                    {
+                      text: "Cancel", onPress: () => console.log("Cancel Pressed",error.message), 
+                    },
+                    { text: "OK", onPress: () => setRegistering(false) }
+                  ],
+                  { cancelable: false }
+                );
+              });
+            }).catch( (error)=>{
+              Alert.alert(
+                "Error",
+                error.message,
+                [
+                  {
+                    text: "Cancel", onPress: () => console.log("Cancel Pressed",error.message), 
+                  },
+                  { text: "OK", onPress: () => console.log("OK Pressed! But cannot proceed") }
+                ],
+                { cancelable: false }
+              );
+            });
         }
-        createUserWithEmailAndPassword(auth,email,password).then((userCredential) => {
-          console.log("user credential",userCredential);
-          const user = userCredential._tokenResponse.email;
-          const myUserUid = auth.currentUser.uid;
-  
-          setDoc(doc(db,"users",`${myUserUid}`),{
-            email:user,
-            phone:phone
-          })
-        })
+
       }
     return (
       <SafeAreaView
@@ -93,6 +129,7 @@ import { Colors } from "../data/Colors";
                   value={email}
                   onChangeText={(text) => setEmail(text)}
                   placeholderTextColor="black"
+                  keyboardType="email-address"
                   style={{
                     fontSize: email ? 18 : 18,
                     borderBottomWidth: 1,
@@ -111,7 +148,7 @@ import { Colors } from "../data/Colors";
                   onChangeText={(text) => setPassword(text)}
                   secureTextEntry={true}
                   placeholder="Password"
-                  placeholderTextColor="black"
+                  placeholderTextColor="black" 
                   style={{
                     fontSize: password ? 18 : 18,
                     borderBottomWidth: 1,
@@ -130,6 +167,7 @@ import { Colors } from "../data/Colors";
                   onChangeText={(text) => setPhone(text)}
                   placeholder="Phone No"
                   placeholderTextColor="black"
+                  keyboardType="phone-pad"
                   style={{
                     fontSize: password ? 18 : 18,
                     borderBottomWidth: 1,
@@ -142,7 +180,7 @@ import { Colors } from "../data/Colors";
               </View>
     
               <Pressable
-              onPress={register}
+                onPress={register}
                 style={{
                   width: 200,
                   backgroundColor: Colors.primary,
@@ -154,7 +192,7 @@ import { Colors } from "../data/Colors";
                 }}
               >
                 <Text style={{ fontSize: 18, textAlign: "center", color: "white" }}>
-                  Register
+                {registering ? <ActivityIndicator color={Colors.white} /> : "Register"}
                 </Text>
               </Pressable>
     
